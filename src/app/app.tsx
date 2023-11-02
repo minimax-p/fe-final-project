@@ -1,5 +1,5 @@
+import { Book, BookList } from "components/organisms/book-list";
 import { ChangeEvent, MouseEvent, useState } from "react";
-import { FixedSizeList, ListChildComponentProps } from "react-window";
 
 function App() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -27,47 +27,6 @@ function App() {
     setHasResult(true);
   };
 
-  interface Book {
-    title: string;
-    cover_i: number;
-  }
-
-  const renderBookRow = ({
-    index,
-    style,
-    data,
-  }: ListChildComponentProps<Book[]>) => {
-    const className = `flex justify-start items-center px-4 ${
-      index % 2 ? "bg-gray-50" : "bg-white"
-    }`;
-    const title = data[index].title;
-    const coverImageSrc = `https://covers.openlibrary.org/b/id/${data[index].cover_i}-S.jpg`;
-    return (
-      <div className={className} style={style}>
-        <div className="h-full w-[35px]">
-          <img src={coverImageSrc} alt={title} className="h-full" />
-        </div>
-        <div className="pl-2">{title}</div>
-      </div>
-    );
-  };
-
-  const BookList = () => (
-    <FixedSizeList
-      className="border border-slate-300"
-      height={250}
-      itemCount={books.length}
-      itemSize={35}
-      width={300}
-      itemData={books}
-    >
-      {/* 
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore */}
-      {renderBookRow}
-    </FixedSizeList>
-  );
-
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-start gap-4 mt-20 text-center">
       <div>
@@ -89,7 +48,7 @@ function App() {
       </button>
       {loading ? <div>Loading ...</div> : ""}
       {hasResult ? <div>Found {booksCount} books</div> : ""}
-      <BookList />
+      <BookList books={books} />
     </div>
   );
 }
