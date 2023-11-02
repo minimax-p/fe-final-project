@@ -1,8 +1,6 @@
-// import { Book, BookList } from "components/organisms/book-list";
 import { ChangeEvent, MouseEvent, useState } from "react";
 
 function App() {
-  // const [books, setBooks] = useState<Book[]>([]);
   const [bookName, setBookName] = useState("");
   const [loading, setLoading] = useState(false);
   const [hasResult, setHasResult] = useState(false);
@@ -14,19 +12,12 @@ function App() {
 
   const handleClick = async (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    setLoading(true);
     setHasResult(false);
-    const encodedBookName = encodeURIComponent(bookName);
-    window.console.log(encodedBookName);
-    const response = await fetch(
-      `https://openlibrary.org/search.json?q=${bookName}`
-    );
+    const response = await fetch("");
     const data = await response.json();
     window.console.log(data);
     setLoading(false);
     setBooksCount(data.numFound);
-    // setBooks(data.docs);
-    setHasResult(true);
   };
 
   return (
@@ -50,7 +41,6 @@ function App() {
       </button>
       {loading ? <div>Loading ...</div> : ""}
       {hasResult ? <div>Found {booksCount} books</div> : ""}
-      {/* <BookList books={books} /> */}
     </div>
   );
 }
