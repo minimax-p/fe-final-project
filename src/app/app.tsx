@@ -1,6 +1,8 @@
 import { Fetch } from "components/atoms/fetch/fetch";
 import { Book, BookList } from "components/organisms/book-list";
 import { ChangeEvent, MouseEvent, useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { Outlet } from "react-router-dom";
 
 interface SearchResponse {
   docs: Book[];
@@ -41,15 +43,24 @@ function App() {
           Search
         </button>
       </div>
-      <Fetch<SearchResponse>
-        uri={searchUri}
-        renderData={(data) => (
-          <>
-            <div>Found {data.numFound} books</div>
-            <BookList books={data.docs} />
-          </>
-        )}
-      ></Fetch>
+      <div className="flex">
+        <ErrorBoundary fallback={<div>Something went wrong</div>}>
+          <Fetch<SearchResponse>
+            uri={searchUri}
+            renderData={(data) => (
+              <div className="flex flex-col">
+                <div>Found {data.numFound} books</div>
+                <BookList books={data.docs} />
+              </div>
+            )}
+          ></Fetch>
+        </ErrorBoundary>
+        <div className="pl-4">
+          <ErrorBoundary fallback={<div>Something went wrong</div>}>
+            <Outlet />
+          </ErrorBoundary>
+        </div>
+      </div>
     </div>
   );
 }
