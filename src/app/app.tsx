@@ -1,12 +1,15 @@
-// import { Book, BookList } from "components/organisms/book-list";
+import { Fetch } from "components/atoms/fetch/fetch";
+import { Book, BookList } from "components/organisms/book-list";
 import { ChangeEvent, MouseEvent, useState } from "react";
 
+interface SearchResponse {
+  docs: Book[];
+  numFound: number;
+}
+
 function App() {
-  // const [books, setBooks] = useState<Book[]>([]);
+  const [searchUri, setSearchUri] = useState<string | null>(null);
   const [bookName, setBookName] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [hasResult, setHasResult] = useState(false);
-  const [booksCount, setBooksCount] = useState(null);
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     setBookName(e.target.value);
@@ -14,24 +17,14 @@ function App() {
 
   const handleClick = async (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
-    setLoading(true);
-    setHasResult(false);
     const encodedBookName = encodeURIComponent(bookName);
-    window.console.log(encodedBookName);
-    const response = await fetch(
-      `https://openlibrary.org/search.json?q=${bookName}`
-    );
-    const data = await response.json();
-    window.console.log(data);
-    setLoading(false);
-    setBooksCount(data.numFound);
-    // setBooks(data.docs);
-    setHasResult(true);
+    const searchUrl = `https://openlibrary.org/search.json?q=${encodedBookName}`;
+    setSearchUri(searchUrl);
   };
 
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-start gap-4 mt-20 text-center">
-      <div>
+      <div className="flex">
         <input
           type="text"
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -40,17 +33,23 @@ function App() {
           value={bookName}
           onChange={handleInputChange}
         />
+        <button
+          type="button"
+          onClick={handleClick}
+          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 ml-2"
+        >
+          Search
+        </button>
       </div>
-      <button
-        type="button"
-        onClick={handleClick}
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-      >
-        Search Books
-      </button>
-      {loading ? <div>Loading ...</div> : ""}
-      {hasResult ? <div>Found {booksCount} books</div> : ""}
-      {/* <BookList books={books} /> */}
+      <Fetch<SearchResponse>
+        uri={searchUri}
+        renderData={(data) => (
+          <>
+            <div>Found {data.numFound} books</div>
+            <BookList books={data.docs} />
+          </>
+        )}
+      ></Fetch>
     </div>
   );
 }

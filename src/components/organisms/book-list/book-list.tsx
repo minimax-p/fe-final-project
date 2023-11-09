@@ -26,23 +26,26 @@ const renderBookRow = ({
 };
 
 interface BookListProps {
-  books: Book[];
+  books: Book[] | undefined;
 }
 
-const BookList = ({ books }: BookListProps) => (
-  <FixedSizeList
-    className="border border-slate-300"
-    height={250}
-    itemCount={books.length}
-    itemSize={35}
-    width={300}
-    itemData={books}
-  >
-    {/* 
+const BookList = ({ books }: BookListProps) =>
+  books ? (
+    <FixedSizeList
+      className="border border-slate-300"
+      height={250}
+      itemCount={books.length}
+      itemSize={35}
+      width={300}
+      itemData={books}
+    >
+      {/* 
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore */}
-    {renderBookRow}
-  </FixedSizeList>
-);
+      {renderBookRow}
+    </FixedSizeList>
+  ) : (
+    <></>
+  );
 
 export { type Book, type BookListProps, BookList };
