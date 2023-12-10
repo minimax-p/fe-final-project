@@ -35,7 +35,7 @@ const Login = ({ setUser }: LoginProps) => {
   const loginGoogle = async () => {
     const user: Realm.User = await app.logIn(
       Realm.Credentials.google({
-        redirectUrl: "https://fe-final-project.netlify.app:8000/auth.html",
+        redirectUrl: "https://fe-final-project.netlify.app/auth.html",
       })
     );
     setUser(user);
