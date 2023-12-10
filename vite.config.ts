@@ -8,7 +8,7 @@ export default defineConfig((configEnv) => {
   return {
     plugins: [react()],
     server: {
-      port: 3000,
+      port: 8000,
     },
     test: {
       globals: true,
